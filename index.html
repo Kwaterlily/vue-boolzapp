@@ -72,39 +72,36 @@
                                 <li><a href="#">Scropri</a></li>
                             </ul>
                             <!-- /menu top -->
-                            
-                            <!-- <h2>Recently played</h2>
-                        <div class="box">
-                            <div> 
-                                <img src="img/metal_lifting.jpg" alt="">
-                                <h4>Heavy Metal</h4>
-                                <h6>Subtitle</h6>
-                            </div>
-                            <div>
-                                <img src="img/metal_lifting.jpg" alt="">
-                                <h4>Heavy Metal</h4>
-                                <h6>Subtitle</h6>
-                            </div>
-                            <div>
-                                <img src="img/metal_lifting.jpg" alt="">
-                                <h4>Heavy Metal</h4>
-                                <h6>Subtitle</h6>
-                            </div>
-                            <div>
-                                <img src="img/metal_lifting.jpg" alt="">
-                                <h4>Heavy Metal</h4>
-                                <h6>Subtitle</h6>
-                            </div>
-                            <div>
-                                <img src="img/metal_lifting.jpg" alt="">
-                                <h4>Heavy Metal</h4>
-                                <h6>Subtitle</h6>
-                            </div>
-                            <div>
-                                <img src="img/metal_lifting.jpg" alt="">
-                                <h4>Heavy Metal</h4>
-                                <h6>Subtitle</h6>
+
+
+                            <!-- <div class="contatto" v-for="(element, key, i) in contacts" :id="key" :key="key">
+                                <img :src="element.avatar" :alt="element.name" class="avatarContatto">
+                                <div class="nameMsg">
+                                    <h4 class="name">{{element.name}}</h2>
+                                    <span v-for="element in element.messages" class="last-msg">
+
+                                        {{element.message}} 
+                                    </span>
+                                </div>
+                                <span class="orario-msg">12.00</span>
                             </div> -->
+
+                            <div class="container">
+                                <div class="row justify-content-md-end">
+                                    <div id="messagesContainer" class="tex-end">
+                                        <div class="msg col-4 tex-end" v-for="(element, i) in messages" >
+                                            <span> {{ element.message }} </span>
+                                         </div>  
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- <li :class="( element.done === true) ? 'checklist':''" v-for="(element, i) in elenco">
+                                <span @click="invertDone (i)">{{ element.text }}</span>
+                                <span><i  @click="togliElemento (i)" class="fas fa-times-circle"></i></span>
+                             </li>
+                              -->
+                            
                     </section>
 
                     <!-- <section class="wrapper">
