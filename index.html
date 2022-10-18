@@ -1,25 +1,33 @@
-
-   
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- vue cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2"></script> -->
+    <!-- day.js cdn -->
+    <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
+    <!-- google font -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <!-- font awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+    <!-- my css -->
     <link rel="stylesheet" href="css/style.css">
     <title>Boolzap</title>
 </head>
 <body>
-    <div id="app">
+    <div id="root">
 
-        <div id="listContactsSide">
+        <!-- LEFT SIDE -->
+        <div id="l-side">
 
+            <!-- nav -->
             <div class="user-nav">
                 <div class="l-user-icons">
-                    <img src="img/avatar0.png" alt="Avatar Utente">
-                    <span class="user-name">Sofia</span>
+                    <img src="img/user-avatar.jpg" alt="Avatar Utente">
+                    <span class="user-name">Livia</span>
                 </div>
                 <div class="r-user-icons">
                     <i class="fas fa-circle-notch"></i>
@@ -27,61 +35,61 @@
                     <i class="fas fa-ellipsis-v"></i>
                 </div>
             </div>
+            <!-- /nav -->
 
-            <div class="notifica">
-                <div class="notifica-background">
+            <!-- notifiche -->
+            <div class="notifications">
+                <div class="bell-background">
                     <i class="fas fa-bell-slash"></i>
                 </div>
-                <div class="notifica-texts">
-                    <div class="strong">
-                        <span>Ricevi notifiche di nuovi messaggi</span>
-                    </div>
-                    <a href="#">Attiva notifiche desktop</a>
+                <div class="notifications-texts">
+                    <div class="strong">Ricevi notifiche di nuovi messaggi</div>
+                    <a href="#">Attiva le notifiche desktop</a>
                 </div>           
             </div>
+            <!-- /notifiche -->
 
+            <!-- ricerca contatti -->
             <div class="chat-search">
                 <div class="search-icon">
                     <i class="fas fa-search"></i>
                 </div>
-                <input type="text" placeholder="Cerca o inizia una nuova chat" v-model="search" @keydown.enter="filtroContatti()">
+                <input type="text" placeholder="Cerca o inizia una nuova chat" v-model="search" @keydown.enter="filteredContacts()">
             </div>
+            <!-- /ricerca utenti -->
 
+            <!-- lista -->
             <div class="contact-list">
-                <div v-for="(contact, index) in filtroContatti" class="contact" 
-                :class="(index == nowContact ? 'contact-active' : null)" 
-                @click="settaggioIndexContatti(index)">
+                <div v-for="(contact, index) in filteredContacts" class="contact" 
+                :class="(index == currentContact ? 'contact-active' : null)" 
+                @click="setIndexContact(index)">
                     <div class="l-contact">
-                        <img :src="filtroContatti[index].avatar" alt="Avatar Contatto">
+                        <img :src="filteredContacts[index].avatar" alt="Avatar Contatto">
                         <div class="info">
-                            <div class="contact-name">
-                                <span>{{ contact.name }}</span>
-                            </div>
-                            <div v-if="contact.messages.length > 0" class="last-message">
-                              <span>  {{ contact.messages.slice(-1)[0].text }}</span>
-                            </div>
+                            <div class="contact-name">{{contact.name}}</div>
+                            <div v-if="contact.messages.length > 0" class="last-message">{{contact.messages.slice(-1)[0].message}}</div>
                         </div>
                     </div>
                     <div class="r-contact">
-                        <div v-if="contact.messages.length > 0" class="message-time">
-                           <span> {{ contact.messages.slice(-1)[0].date }}</span>
-                        </div>
+                        <div v-if="contact.messages.length > 0" class="message-time">{{contact.messages.slice(-1)[0].date}}</div>
                     </div>
                 </div>
             </div>
+            <!-- /lista utenti-->
 
         </div>
+        <!-- /LEFT SIDE -->
 
+        <!-- RIGHT SIDE -->
         <div id="r-side">
 
+            <!-- nav  -->
             <div class="contact-nav">
                 <div class="l-contact-icons">
-                    <img :src="filtroContatti[nowContact].avatar" alt="Avatar Utente">
+                    <img :src="filteredContacts[currentContact].avatar" alt="Avatar Utente">
                     <div class="contact-info">
-                        <div class="contact-name">
-                            <span>{{ filtroContatti[nowContact].name }}</span>
-                        </div>
-                        <div  v-if="filtroContatti[nowContact].messages.length > 0"  class="last-access">Ultimo accesso oggi alle ore {{filtroContatti[nowContact].messages.slice(-1)[0].date}}</div>
+                        <div class="contact-name">{{filteredContacts[currentContact].name}}</div>
+                        <div  v-if="filteredContacts[currentContact].messages.length > 0"  class="last-access">Ultimo accesso oggi alle ore {{filteredContacts[currentContact].messages.slice(-1)[0].date}}</div>
                     </div>
                 </div>
                 <div class="r-contact-icons">
@@ -90,26 +98,35 @@
                     <i class="fas fa-ellipsis-v"></i>
                 </div>
             </div>
+            <!-- /nav -->
 
+            <!-- messaggi -->
             <div class="message-area">
-                <div v-for="(message, index) in filtroContatti[nowContact].messages" class="message" :class="(filtroContatti[nowContact].messages[index].status == 'sent') ? 'message-sent' : 'message-received'" @mouseover="setIndexMessage(index)" @mouseleave="removeIndexMessage()">
-                   <span> {{ filtroContatti[nowContact].messages[index].message }}</span>
-                    <span class="message-date">
-                        {{ filtroContatti[nowContact].messages[index].date }}
-                    </span>
-                    
+                <div v-for="(message, index) in filteredContacts[currentContact].messages" class="message" :class="(filteredContacts[currentContact].messages[index].status == 'sent') ? 'message-sent' : 'message-received'" @mouseover="setIndexMessage(index)" @mouseleave="removeIndexMessage()">
+                    {{filteredContacts[currentContact].messages[index].message}}
+                    <span class="message-date">{{filteredContacts[currentContact].messages[index].date}}</span>
+                    <div class="dropdown" :class="(index == currentMessage ? 'dropdown-active' : null)">
+                        <!-- <span @click="deleteMessage(currentContact, currentMessage)">Delete message</span> -->
+                        <i class="fas fa-trash" @click="deleteMessage(currentContact, currentMessage)"></i>
+                    </div>
                 </div>
             </div>
+            <!-- /messaggi -->
 
-            <div class="message-controls">
+            <!-- nuovo messaggio -->
+            <div class="text-controls">
                 <i class="far fa-smile"></i>
-                <input type="text" placeholder="Scrivi un messaggio" v-model="messageText" @keydown.enter="newMessage(nowContact)">
+                <input type="text" placeholder="Scrivi un messaggio" v-model="messageText" @keydown.enter="newMessage(currentContact)">
                 <i class="fas fa-microphone"></i>
             </div>
+            <!-- /nuovo messaggio -->
+
         </div>
+        <!-- /RIGHT SIDE -->
+
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- my js -->
     <script src="js/script.js"></script>
 </body>
 </html>
